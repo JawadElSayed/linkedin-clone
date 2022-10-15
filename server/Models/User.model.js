@@ -13,9 +13,9 @@ exports.userSchema = mongoose.Schema({
         unique: true,
         lowercase: true,
     },
-    phone: {
+    major: {
         type: String,
-        required: "phone is required",
+        required: "major is required",
     },
     password: {
         type: String,
@@ -26,14 +26,14 @@ exports.userSchema = mongoose.Schema({
         type: String,
         required: "type is required",
     },
+    phone: {
+        type: String,
+    },
     cv: {
         type: String,
         default: null,
     },
     employe: {
-        type: String,
-    },
-    magor: {
         type: String,
     },
     bio: {
@@ -47,7 +47,7 @@ exports.userSchema = mongoose.Schema({
     },
     profile: {
         type: String,
-    }
+    },
 });
 
 const model = mongoose.model("User", userSchema);
