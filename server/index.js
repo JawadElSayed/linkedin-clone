@@ -4,6 +4,9 @@ const db = require("./config/db.config");
 
 app.use(express.json());
 
+const authRoutes = require("./routes/auth.routes");
+app.use("/", authRoutes);
+
 app.listen(8000, (err) => {
     if (err) {
         console.log(err);
