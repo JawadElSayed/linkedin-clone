@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const db = require("./config/db.config");
 
 app.use(express.json());
 
@@ -8,5 +9,6 @@ app.listen(8000, (err) => {
         console.log(err);
     } else {
         console.log("Server running on port 8000");
+        db();
     }
 });
