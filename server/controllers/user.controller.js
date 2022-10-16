@@ -101,12 +101,15 @@ const apply = async (req, res) => {
         const job = await JobModel.findOne({ id: body.id });
 
         // checking if already applied
-        const id_exsit = await JobModel.exists({ applicats_id: user });
-        if (id_exsit) {
-            return res.status(400).json({
-                status: "error",
-                message: "already applied",
-            });
+        for (let i of job.applicats_id) {
+            console.log(user);
+            console.log(i);
+            if (i == user.id) {
+                return res.status(400).json({
+                    status: "error",
+                    message: "Already applied",
+                });
+            }
         }
 
         // appending user to job list
