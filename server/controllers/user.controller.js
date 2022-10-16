@@ -1,8 +1,9 @@
 const UserModel = require("../Models/user.model");
+const JobModel = require("../Models/job.model");
 
 const editProfile = async (req, res) => {
     const { id, ...data } = req.body;
-    
+
     // update profile
     try {
         const user = await UserModel.findById(id);
@@ -30,6 +31,16 @@ const editProfile = async (req, res) => {
     }
 };
 
+const getAllJobs = async (req, res) => {
+    const jobs = await JobModel.find({});
+    console.log(jobs);
+    res.status(200).json({
+        status: "success",
+        user: jobs,
+    });
+};
+
 module.exports = {
     editProfile: editProfile,
+    getAllJobs: getAllJobs,
 };
