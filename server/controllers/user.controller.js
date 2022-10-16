@@ -64,6 +64,7 @@ const getJobById = async (req, res) => {
 
 const searchForJob = async (req, res) => {
     try {
+        // search method
         const jobs = await JobModel.find({
             $or: [
                 {
@@ -91,9 +92,42 @@ const searchForJob = async (req, res) => {
     }
 };
 
+const apply = async (req, res) => {
+    const { ...body } = req.body;
+
+    try {
+        // finding user and job
+        const user = await UserModel.findOne({ email: req.email }).select("id");
+        const job = await JobModel.findOne({ id: body.id });
+
+        // checking if already applied
+        const id_exsit = await JobModel.exists({ applicats_id: user });
+        if (id_exsit) {
+            return res.status(400).json({
+                status: "error",
+                message: "already applied",
+            });
+        }
+
+        // appending user to job list
+        job.applicats_id.push(user);
+        job.save();
+
+        res.status(200).json({
+            status: "success",
+            user: job,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: "error",
+            message: err.message,
+        });
+    }
+};
 module.exports = {
     editProfile: editProfile,
     getAllJobs: getAllJobs,
     getJobById: getJobById,
     searchForJob: searchForJob,
+    apply: apply,
 };
