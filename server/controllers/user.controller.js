@@ -32,12 +32,19 @@ const editProfile = async (req, res) => {
 };
 
 const getAllJobs = async (req, res) => {
-    const jobs = await JobModel.find({});
-    console.log(jobs);
-    res.status(200).json({
-        status: "success",
-        user: jobs,
-    });
+    try {
+        const jobs = await JobModel.find();
+        console.log(jobs);
+        res.status(200).json({
+            status: "success",
+            user: jobs,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: "error",
+            message: err.message,
+        });
+    }
 };
 
 module.exports = {
