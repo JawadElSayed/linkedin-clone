@@ -124,10 +124,27 @@ const apply = async (req, res) => {
         });
     }
 };
+
+const getUser = async (req, res) => {
+    try {
+        const user = await UserModel.findOne({ email: req.email });
+        res.status(200).json({
+            status: "success",
+            user: user,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: "error",
+            message: err.message,
+        });
+    }
+};
+
 module.exports = {
     editProfile: editProfile,
     getAllJobs: getAllJobs,
     getJobById: getJobById,
     searchForJob: searchForJob,
     apply: apply,
+    getUser: getUser,
 };
