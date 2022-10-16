@@ -10,6 +10,9 @@ app.use("/", authRoutes);
 const userRoutes = require("./routes/user.routes");
 app.use("/users", userRoutes);
 
+const companyRoutes = require("./routes/company.routes");
+app.use("/company", companyRoutes);
+
 app.listen(8000, (err) => {
     if (err) {
         console.log(err);
