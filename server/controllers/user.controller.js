@@ -62,8 +62,38 @@ const getJobById = async (req, res) => {
     }
 };
 
+const searchForJob = async (req, res) => {
+    try {
+        const jobs = await JobModel.find({
+            $or: [
+                {
+                    title: {
+                        $regex: req.params.search,
+                    },
+                },
+                {
+                    major: {
+                        $regex: req.params.search,
+                    },
+                },
+            ],
+        });
+
+        res.status(200).json({
+            status: "success",
+            user: jobs,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: "error",
+            message: err.message,
+        });
+    }
+};
+
 module.exports = {
     editProfile: editProfile,
     getAllJobs: getAllJobs,
     getJobById: getJobById,
+    searchForJob: searchForJob,
 };
