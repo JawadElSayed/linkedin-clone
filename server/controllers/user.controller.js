@@ -1,5 +1,6 @@
 const UserModel = require("../Models/user.model");
 const JobModel = require("../Models/job.model");
+const FollowersModel = require("../Models/followers.model");
 
 const editProfile = async (req, res) => {
     const { id, ...data } = req.body;
@@ -98,12 +99,10 @@ const apply = async (req, res) => {
     try {
         // finding user and job
         const user = await UserModel.findOne({ email: req.email }).select("id");
-        const job = await JobModel.findOne({ id: body.id });
+        const job = await JobModel.findOne({ _id: body.id });
 
         // checking if already applied
-        for (let i of job.applicats_id) {
-            console.log(user);
-            console.log(i);
+        for (let i of job.applicants_id) {
             if (i == user.id) {
                 return res.status(400).json({
                     status: "error",
@@ -113,7 +112,7 @@ const apply = async (req, res) => {
         }
 
         // appending user to job list
-        job.applicats_id.push(user);
+        job.applicants_id.push(user);
         job.save();
 
         res.status(200).json({
@@ -143,6 +142,45 @@ const getUser = async (req, res) => {
     }
 };
 
+const follow = async (req, res) => {
+    try {
+        const user = await UserModel.findOne({ email: req.email }).select("id");
+
+        // check if user is already following
+        const exists = await FollowersModel.findOne({
+            user_id: user,
+            company_id: req.body.id,
+        });
+
+        // unfollow if user is already following
+        if (exists) {
+            const x = await FollowersModel.findOneAndRemove(
+                { user_id: user.id },
+                { company_id: req.body.id }
+            );
+            return res.status(200).json({
+                status: "unfollowed",
+            });
+        }
+
+        // adding follow
+        const follow = new FollowersModel();
+        follow.user_id = user._id;
+        follow.company_id = req.body.id;
+        await follow.save();
+
+        res.status(200).json({
+            status: "success",
+            user: follow,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: "error",
+            message: err.message,
+        });
+    }
+};
+
 module.exports = {
     editProfile: editProfile,
     getAllJobs: getAllJobs,
@@ -150,4 +188,5 @@ module.exports = {
     searchForJob: searchForJob,
     apply: apply,
     getUser: getUser,
+    follow: follow,
 };
